@@ -13,6 +13,7 @@ public class TestWindow : EditorWindow
         test.Show();
     }
 
+    static string outputPath = "";
     private void OnGUI()
     {
         EditorGUILayout.BeginVertical();
@@ -26,7 +27,7 @@ public class TestWindow : EditorWindow
         foreach (var item in rules)
         {
             EditorGUILayout.BeginHorizontal();
-
+            outputPath = item.outPut;
             var strPatten = "/";
             foreach (var patten in item.pattens)
             {
@@ -76,7 +77,9 @@ public class TestWindow : EditorWindow
                 var importer = AssetImporter.GetAtPath(filePath);
                 if (importer != null)
                 {
-                    importer.assetBundleName = file.Split('.')[0];
+                    var fileName = file.Split('.')[0];
+                    var tag = fileName.Split('_')[0];
+                    importer.assetBundleName = tag.ToLower();
                 }
             }
 
@@ -86,7 +89,8 @@ public class TestWindow : EditorWindow
 
     private static void Build()
     {
-        BuildPipeline.BuildAssetBundles(@"E:\Unity2017Work\Lemon\Lemon_assetsdata\model",
+        var dataPath = Application.dataPath;
+        BuildPipeline.BuildAssetBundles(dataPath + "/" + outputPath,
           BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows64);
 
         Debug.Log("[BuildManager] Build Asstebundle success!");
